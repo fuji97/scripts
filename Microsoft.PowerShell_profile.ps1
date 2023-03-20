@@ -1,28 +1,29 @@
-Import-Module posh-git
-Import-Module oh-my-posh
-oh-my-posh init pwsh --config $env:POSH_THEMES_PATH\blue-owl.omp.json | Invoke-Expression
-
-# Add Chocolatey
+# Chocolatey profile
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path($ChocolateyProfile)) {
-    Import-Module "$ChocolateyProfile"
+ Import-Module "$ChocolateyProfile"
 }
 
-# Shows navigable menu of all options when hitting Tab
-Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+# Oh My POSH Settings
+oh-my-posh init pwsh --config $env:POSH_THEMES_PATH/blue-owl.omp.json | Invoke-Expression
+Enable-PoshTransientPrompt
 
-# Autocompletion for arrow keys
-Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
-Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+# Load modules
+Import-Module PSReadLine
+Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+Set-PSReadLineOption -HistorySearchCursorMovesToEnd
+Set-PSReadLineOption -ShowToolTips
 
-# 'su' command
-Function WT-Admin { 
-    $curDir = Get-Location
-    Start-Process -Verb RunAs cmd.exe "/c start wt.exe -d $curDir" 
+# su
+function Open-Admin {
+    $currPath = Get-Location
+    Start-Process -Verb RunAs cmd.exe "/c start wt.exe -d $currPath"
 }
 
-# Quick access to GPG keys
-function Get-GpgKeys { 
+function Get-GgpKeys {
     param(
         [string]$ExportParam
     )
@@ -34,18 +35,7 @@ function Get-GpgKeys {
     }
 }
 
-# Navigate to special location
-function Set-SpecialLocation {
-  [CmdletBinding()]
-    param(
-        [Parameter(Mandatory=$true)]
-        [string]$EnvFolder
-    )
-    $envPath = [Environment]::GetFolderPath($EnvFolder)
-    Set-Location $envPath
-}
-
-# Shell-style aliases
-Set-Alias su WT-Admin
-Set-Alias gpg-keys Get-GpgKeys
+Set-Alias su Open-Admin
+Set-Alias gpg-keys Get-GPGKeys
 Set-Alias cds Set-SpecialLocation
+Set-Alias which Get-Command
