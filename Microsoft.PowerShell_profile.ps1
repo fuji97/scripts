@@ -9,6 +9,7 @@ oh-my-posh init pwsh --config $env:POSH_THEMES_PATH/blue-owl.omp.json | Invoke-E
 Enable-PoshTransientPrompt
 
 # Load modules
+# Import-Module "C:\Program Files\gsudo\Current\gsudoModule.psd1"
 Import-Module PSReadLine
 Set-PSReadLineOption -PredictionSource History
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
@@ -35,7 +36,12 @@ function Get-GgpKeys {
     }
 }
 
+function Clip-WorkingDirectory {
+    $pwd | Select-Object -ExpandProperty Path | Set-Clipboard
+}
+
 Set-Alias su Open-Admin
 Set-Alias gpg-keys Get-GPGKeys
 Set-Alias cds Set-SpecialLocation
 Set-Alias which Get-Command
+Set-Alias ccd Clip-WorkingDirectory
