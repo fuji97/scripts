@@ -13,6 +13,11 @@ The `Setup.ps1` script is an all-in-one PowerShell development environment setup
 - Verifies prerequisites like PowerShell version and internet connectivity
 - Supports `-AcceptLicense` and `-Force` flags for automated and repeatable setups
 
+### TODO
+- Install a compatible NerdFont font to show all glyphs
+- Update the Windows Terminal PowerShell profile to use the newly installed font
+- Create UI to choose what to install and what not
+
 ## Installation
 
 ### Run Setup script
