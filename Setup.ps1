@@ -163,8 +163,8 @@ function Install-PowerShellProfile {
     Write-Info "Setting up PowerShell profile..."
     
     $profileUrl = "https://raw.githubusercontent.com/fuji97/scripts/main/Microsoft.PowerShell_profile.ps1"
-    $profilePath = $PROFILE.AllUsersAllHosts
-    
+    $profilePath = $PROFILE.CurrentUserCurrentHost
+
     # Create profile directory if it doesn't exist
     $profileDir = Split-Path $profilePath -Parent
     if (-not (Test-Path $profileDir)) {
