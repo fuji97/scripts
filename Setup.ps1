@@ -159,6 +159,41 @@ function Install-OhMyPosh {
     }
 }
 
+function Install-PSFzf {
+    Write-Info "Checking if PSFzf is already installed..."
+    
+    # Check if PSFzf module is already installed
+    $module = Get-Module -ListAvailable -Name PSFzf
+    if ($module -and -not $Force) {
+        Write-Success "PSFzf is already installed. Version: $($module.Version)"
+        return $true
+    }
+    
+    Write-Info "Installing PSFzf from PowerShell Gallery..."
+    
+    try {
+        # Install PSFzf module
+        $installArgs = @{
+            Name = "PSFzf"
+            Force = $Force
+            AllowClobber = $true
+            Scope = "CurrentUser"
+        }
+        
+        if ($AcceptLicense) {
+            $installArgs["AcceptLicense"] = $true
+        }
+        
+        Install-Module @installArgs
+        
+        Write-Success "PSFzf installed successfully!"
+        return $true
+    } catch {
+        Write-Error "An error occurred during PSFzf installation: $($_.Exception.Message)"
+        return $false
+    }
+}
+
 function Install-PowerShellProfile {
     Write-Info "Setting up PowerShell profile..."
     
@@ -237,6 +272,9 @@ Write-Info "This script will install:"
 Write-Info "  - Windows Terminal"
 Write-Info "  - PowerShell Core" 
 Write-Info "  - Oh My Posh"
+Write-Info "  - fzf (fuzzy finder)"
+Write-Info "  - PSFzf (PowerShell module for fzf)"
+Write-Info "  - zoxide (smarter cd command)"
 Write-Info "  - PowerShell Profile from GitHub"
 Write-Host ""
 
@@ -286,8 +324,26 @@ $installationResults["OhMyPosh"] = Install-OhMyPosh
 
 Write-Host ""
 
+# Install fzf
+Write-Header "4. Installing fzf..."
+$installationResults["fzf"] = Install-WithWinget -PackageId "fzf" -DisplayName "fzf" -AcceptLicense:$AcceptLicense -Force:$Force
+
+Write-Host ""
+
+# Install PSFzf
+Write-Header "5. Installing PSFzf..."
+$installationResults["PSFzf"] = Install-PSFzf
+
+Write-Host ""
+
+# Install zoxide
+Write-Header "6. Installing zoxide..."
+$installationResults["zoxide"] = Install-WithWinget -PackageId "ajeetdsouza.zoxide" -DisplayName "zoxide" -AcceptLicense:$AcceptLicense -Force:$Force
+
+Write-Host ""
+
 # Install PowerShell Profile
-Write-Header "4. Installing PowerShell Profile..."
+Write-Header "7. Installing PowerShell Profile..."
 $installationResults["PowerShellProfile"] = Install-PowerShellProfile
 
 Write-Host ""
